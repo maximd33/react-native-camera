@@ -1222,14 +1222,22 @@ class Camera2 extends CameraViewImpl implements MediaRecorder.OnInfoListener, Me
     void captureStillPicture() {
         try {
             CaptureRequest.Builder captureRequestBuilder = mCamera.createCaptureRequest(
-                    CameraDevice.TEMPLATE_STILL_CAPTURE);
+                    CameraDevice.TEMPLATE_MANUAL);
             if (mIsScanning) {
                 mImageFormat = ImageFormat.JPEG;
                 captureRequestBuilder.removeTarget(mScanImageReader.getSurface());
             }
+
             captureRequestBuilder.addTarget(mStillImageReader.getSurface());
             captureRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE,
                     mPreviewRequestBuilder.get(CaptureRequest.CONTROL_AF_MODE));
+
+            captureRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE,
+                            CaptureRequest.CONTROL_AE_MODE_OFF);
+			captureRequestBuilder.set(CaptureRequest.SENSOR_EXPOSURE_TIME,100000000L);
+			captureRequestBuilder.set(CaptureRequest.SENSOR_SENSITIVITY,100);
+			captureRequestBuilder.set( CaptureRequest.CONTROL_AWB_MODE, CaptureRequest.CONTROL_AWB_MODE_AUTO);
+			if (0) {
             switch (mFlash) {
                 case Constants.FLASH_OFF:
                     captureRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE,
@@ -1256,6 +1264,7 @@ class Camera2 extends CameraViewImpl implements MediaRecorder.OnInfoListener, Me
                             CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
                     break;
             }
+			}
             captureRequestBuilder.set(CaptureRequest.JPEG_ORIENTATION, getOutputRotation());
 
 
